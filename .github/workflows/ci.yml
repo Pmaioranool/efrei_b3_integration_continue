@@ -1,0 +1,60 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        working-directory: ./backend
+        run: npm ci
+      - name: Generate Prisma Client
+        working-directory: ./backend
+        run: npx --no-install prisma generate
+      # - name: Run tests (Commented until tests are added)
+      #   working-directory: ./backend
+      #   run: npm test
+
+  build-and-test-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        working-directory: ./frontend
+        run: npm ci
+      - name: Build Next.js
+        working-directory: ./frontend
+        run: npm run build
+
+  docker-build:
+    needs: [build-and-test-backend, build-and-test-frontend]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Build Backend Image
+        run: docker build -t sm-backend:latest ./backend
+        
+      - name: Build Frontend Image
+        run: docker build -t sm-frontend:latest ./frontend
+        
+      # Here you would typically push to a registry (Docker Hub, GHCR, etc.)
+      # - name: Push to Registry
+      #   run: |
+      #     docker push sm-backend:latest
+      #     docker push sm-frontend:latest
