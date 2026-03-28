@@ -1,6 +1,6 @@
 generator client {
   provider      = "prisma-client-js"
-  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x", "linux-musl"]
 }
 
 datasource db {
@@ -9,11 +9,15 @@ datasource db {
 }
 
 model Student {
-  id        Int      @id @default(autoincrement())
-  firstName String
-  lastName  String
-  email     String   @unique
-  phone     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id             Int      @id @default(autoincrement())
+  firstName      String   @db.VarChar(100)
+  lastName       String   @db.VarChar(100)
+  email          String   @unique @db.VarChar(100)
+  phone          String   @db.VarChar(20)
+  enrollmentDate DateTime
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([email])
+  @@index([enrollmentDate])
 }

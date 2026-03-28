@@ -28,7 +28,7 @@ services:
         condition: service_healthy
     environment:
       PORT: ${PORT}
-      DATABASE_URL: ${DATABASE_URL}
+      DATABASE_URL: "mysql://root:rootpassword@db:3306/student_management"
     ports:
       - "${PORT}:${PORT}"
     volumes:
