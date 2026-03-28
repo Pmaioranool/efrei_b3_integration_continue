@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const winston = require("winston");
+const studentRoutes = require("./routes/studentRoutes");
 
 const app = express();
 
@@ -20,6 +21,9 @@ const logger = winston.createLogger({
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
 });
+
+// Routes
+app.use("/api/students", studentRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
