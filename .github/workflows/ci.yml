@@ -57,7 +57,7 @@ jobs:
   docker-build:
     needs: [build-and-test-backend, build-and-test-frontend]
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
 
     steps:
       - name: Checkout repo
